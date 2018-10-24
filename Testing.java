@@ -29,10 +29,12 @@ import java.awt.Color;
 
 import javax.swing.BoxLayout;
 import javax.swing.SwingConstants;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
  
 public class Testing extends JPanel implements ActionListener {
 	String demo = "mot hai ba bon nam sau bay tam chin muoi";
-	JProgressBar progressBar = new JProgressBar(0,1000);
 	JButton btnPlay = new JButton("Start");
 	JButton btnCheck = new JButton("Check");
 	JButton btnPause = new JButton("Pause");
@@ -40,28 +42,31 @@ public class Testing extends JPanel implements ActionListener {
 	JLabel lblScript = new JLabel("Correct Script");
 	Label AnswerLAbel = new Label();
 	JLabel lblYourScoreText = new JLabel("Your Score");
-	JLabel ScriptText = new JLabel("New label");
+	JLabel ScriptText = new JLabel("");
+	JLabel yourScoreIntLb = new JLabel("0");
+	JTextPane textPane = new JTextPane();
 	JTextArea textArea = new JTextArea();
 	State state;
 	public Testing(State state) {
 		setLayout(null);
 		this.state = state;
 		// pause audio
-		btnPause.setBounds(274, 41, 80, 29);
+		btnPause.setBounds(252, 223, 80, 29);
 		btnPause.addActionListener(this);
 		add(btnPause);
-		
-		// progree bar
-		progressBar.setBounds(95, 6, 409, 20);
-		add(progressBar);
-		
+		LineSound lineSound = new LineSound(this.state);
+		lineSound.setSize(611, 47);
+		lineSound.setLocation(6, 6);
+		add(lineSound);
+		Thread thread = new Thread(lineSound);
+		thread.start();
 		// check 
-		btnCheck.setBounds(461, 41, 83, 29);
+		btnCheck.setBounds(451, 223, 83, 29);
 		btnCheck.addActionListener(this);
 		add(btnCheck);
 		
 		// Start listening
-		btnPlay.setBounds(73, 41, 75, 29);
+		btnPlay.setBounds(87, 223, 75, 29);
 		btnPlay.addActionListener(this);
 		add(btnPlay);
 		
@@ -75,11 +80,11 @@ public class Testing extends JPanel implements ActionListener {
 		add(scrollPane);
 		// label answer
 		
-		lblYourAnswer.setBounds(95, 197, 89, 16);
+		lblYourAnswer.setBounds(95, 264, 89, 16);
 		add(lblYourAnswer);
 		
 		// label script
-		lblScript.setBounds(95, 376, 89, 16);
+		lblScript.setBounds(95, 454, 89, 16);
 		add(lblScript);
 		ScriptText.setVerticalAlignment(SwingConstants.TOP);
 		
@@ -89,21 +94,25 @@ public class Testing extends JPanel implements ActionListener {
 		//score
 		
 		JLabel lblYourScoreText = new JLabel("Your Score");
-		lblYourScoreText.setBounds(95, 621, 134, 16);
+		lblYourScoreText.setBounds(95, 660, 134, 16);
 		add(lblYourScoreText);
 		
-		JLabel yourScoreIntLb = new JLabel("Your Score");
-		yourScoreIntLb.setBounds(310, 621, 134, 16);
+		
+		yourScoreIntLb.setBounds(194, 660, 134, 16);
 		add(yourScoreIntLb);
 		
 		JScrollPane scrollPane_1 = new JScrollPane(ScriptText);
-		scrollPane_1.setBounds(95, 404, 409, 137);
+		scrollPane_1.setBounds(95, 500, 409, 137);
 		add(scrollPane_1);
 		
 		JScrollPane scrollPane_2 = new JScrollPane();
-		scrollPane_2.setBounds(95, 221, 409, 137);
+		scrollPane_2.setBounds(95, 300, 409, 137);
 		add(scrollPane_2);
-		scrollPane_2.setViewportView(AnswerLAbel);
+		
+		
+		scrollPane_2.setViewportView(textPane);
+		AnswerLAbel.setBounds(561, 304, 405, 133);
+		add(AnswerLAbel);
 		
 		
 		AnswerLAbel.setVerticalAlignment(SwingConstants.TOP);
@@ -113,60 +122,86 @@ public class Testing extends JPanel implements ActionListener {
 	//action button
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnPlay) {
+			state.setTruePlaying();
 			state.getAudio().play();
 		}
 		if(e.getSource() == btnPause) {
+			state.setFalsePlaying();
 			state.getAudio().pause();
 			System.out.println("aaa");
 		}
 		if(e.getSource() == btnCheck) {
 			String userAnswer = textArea.getText();
-			userAnswer = userAnswer.replaceAll("\n", " ");
-			System.out.println(userAnswer);
-			AnswerLAbel.setText(userAnswer);
-			AnswerLAbel.setVerticalAlignment(JLabel.TOP);
-			AnswerLAbel.highlightRegion(0, 3);
-			ArrayList arr2 = LCS.convertArrList(demo);
+			String answerToTest = textArea.getText();
 			
-			ArrayList arr1 = LCS.convertArrList(userAnswer);
+			answerToTest  = answerToTest.replaceAll("\n", " ");
+			answerToTest = answerToTest.replaceAll(","," ");
+			answerToTest = answerToTest.replaceAll("\\."," ");
+			System.out.println(userAnswer + " userAns");
+			System.out.println(answerToTest + " userAnstoTest");
+			//userAnswer = userAnswer.replaceAll("\n","<br>");
+			SimpleAttributeSet sas = new SimpleAttributeSet();
+			StyleConstants.setForeground(sas, Color.RED);
+			   
+			textPane.setText(userAnswer);
+			StyledDocument document = textPane.getStyledDocument();
+			document.setCharacterAttributes(0,0,sas,true);
+			ArrayList arr1 = LCS.convertArrList(answerToTest,true);
+			
+			ArrayList arr2 = LCS.convertArrList(demo,false);
+			double maxWords = arr2.size();
+			double rightWords = LCS.LCS(arr1, arr2).size();
+			String textScore ="" +  (int) ( (double)(rightWords/maxWords) * 100);
+			yourScoreIntLb.setText(textScore);
 			ScriptText.setText(demo);
-			System.out.println("nhung tu tra loi dung la : " + LCS.LCS(arr1,arr2));	
+			for(int i = 0 ; i < LCS.startIndex.size();i++) {
+				int start = (int) LCS.startIndex.get(i);
+				int end = (int) LCS.endIndex.get(i) ;
+				System.out.println("  la : " + start + " ket: " + end + " dung " + LCS.trueIndex.get(i));
+				if((boolean) LCS.trueIndex.get(i) == true)	document.setCharacterAttributes(start,end - start,sas, true);
+			}
 		}
 	}
 	
 	
-	// overide to highlight word
+	// @Override to highlight word
 	
 	static class Label extends JLabel
 	{
 	    private static final long serialVersionUID = 1L;
-	    private int start;
-	    private int end;
-
+	    private ArrayList start;
+	    private ArrayList end;
+	    private ArrayList indexTrue;
 	    @Override
 	    public void paint(Graphics g)
 	    {
-	        FontMetrics fontMetrics = g.getFontMetrics();
-
-	        String startString = getText().substring(0, start);
-	        String text = getText().substring(start, end);
-
-	        int startX = fontMetrics.stringWidth(startString);
-	        int startY = 0;
-
-	        int length = fontMetrics.stringWidth(text);
-	        int height = fontMetrics.getHeight();
-
-	        g.setColor(new Color(0x33, 0x66, 0xFF, 0x66));
-	        g.fillRect(startX, startY, length, height);
-
+	    	if(start != null) {
+	    		FontMetrics fontMetrics = g.getFontMetrics();
+		        g.setColor(new Color( 0x33, 0xCC, 0x00));
+		        
+		        for(int i = 0 ; i< start.size();i++) {
+		        	if((boolean) indexTrue.get(i) == true) {
+		        		String startString = getText().substring(0, (int) start.get(i));
+				        String text = getText().substring((int) start.get(i), (int) end.get(i));
+				        int startX = fontMetrics.stringWidth(startString) ;
+				        int startY = 0;
+				        int length = fontMetrics.stringWidth(text);
+				        int height = fontMetrics.getHeight();
+				        g.fillRect(startX, startY, length, height);
+		        	}      	
+		        }
+		        
+	    	}else {
+	    		System.out.println("khoi tao");
+	    	}
 	        super.paint(g);
 	    }
 
-	    public void highlightRegion(int start, int end)
+	    public void highlightRegion(ArrayList start, ArrayList end,ArrayList indexTrue)
 	    {
 	        this.start = start;
 	        this.end = end;
+	        this.indexTrue = indexTrue;
 	    }
 	}
 }

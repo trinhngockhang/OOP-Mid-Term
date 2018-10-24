@@ -28,14 +28,12 @@ public class Start extends JFrame implements ActionListener {
 		JLabel lblSelectYourLevel = new JLabel("Select your level");
 		lblSelectYourLevel.setFont(new Font("Luminari", Font.PLAIN, 14));
 		lblSelectYourLevel.setBounds(360, 228, 201, 33);
-		contentPanel.add(lblSelectYourLevel);
+		contentPanel.add(lblSelectYourLevel);	
 		
-		
-		comboBox.setBounds(397, 352, 120, 27);
+		comboBox.setBounds(360, 350, 120, 27);
 		contentPanel.add(comboBox);
 		
-		
-		GoButton.setBounds(400, 475, 117, 29);
+		GoButton.setBounds(360, 468, 117, 29);
 		GoButton.addActionListener(this);
 		contentPanel.add(GoButton);
 	}

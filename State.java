@@ -13,6 +13,7 @@ public class State {
 	private MediaPlayer audio;
 	private JPanel Panel;
 	String audioStringArr[] = {"level1.mp3","level2.mp3","level3.mp3","level4.mp3","level5.mp3","level6.mp3","level7.mp3","level8.mp3","level9.mp3","level10.mp3","level11.mp3","level12.mp3"};
+	String textStringArr[] = {"level1.txt","level2.txt","level3.txt","level4.txt","level5.txt","level6.txt","level7.txt","level8.txt","level9.txt","level10.txt","level11.txt","level12.txt"};
 	public void setLevel(int lv) {
 		System.out.println("level dc chon la : " + lv);
 		level = lv;

@@ -1,7 +1,16 @@
 import java.util.ArrayList;
 
 public class LCS {
-	public static ArrayList convertArrList(String s) {
+	public static ArrayList startIndex = new ArrayList(); 
+	public static ArrayList endIndex = new ArrayList(); 
+	public static ArrayList trueIndex = new ArrayList(); 
+	public static ArrayList convertArrList(String s,boolean containTrueIndex) {
+		int n = 0;
+		
+		if(containTrueIndex == true) {
+			startIndex.clear();
+			endIndex.clear();
+		}
 		ArrayList data = new ArrayList();
 		int start = 0;
 		int i = 0;
@@ -15,32 +24,52 @@ public class LCS {
 				String temp = s.substring(start,i);
 				temp.trim();
 				data.add(temp);
+				if(containTrueIndex) {
+					startIndex.add(start);
+					endIndex.add(i);
+				}		
 			}else {
 				String temp = s.substring(start,s.length());
 				temp.trim();
 				data.add(temp);
+				if(containTrueIndex) {
+					startIndex.add(start);
+					endIndex.add(s.length());
+				}				
 			}
 			start = i+1;
+			trueIndex.add(false);
 		}
 		
 		return data;
 	}
 
 	public static ArrayList LCS(ArrayList arr1,ArrayList arr2) {
+		boolean lastTrue = false;
+		int z = 0;
 		ArrayList trueAns = new ArrayList();
 		int long1 = arr1.size();
 		int long2 = arr2.size();
 		for(int i = 0;i < long1;i++) {
-			int x = i <= 5 ? 0: i -5;
+			String s1 = arr1.get(i).toString();
+			int x = lastTrue? (z ):((i <= 3) ? 0: i - 3);
+			System.out.println ( "x la " + x);
 			for(int j = x ;j < long2;j++) {
-				
-				String s1 = arr1.get(i).toString();
 				String s2 = arr2.get(j).toString();
-				System.out.println("so sanh: " + s1 + " voi " + s2);
+				System.out.println("so sanh: " +j + "   "+  s1 + " voi " + s2);
 				if(s1.equals(s2)) {
+					trueIndex.set(i,true);
+					lastTrue = true;
+					System.out.println ( "set " + j + " true " + trueIndex.get(j));
 					trueAns.add(s1);
+					z = j + 1;
 					j = long2 + 1;
+					
+				
+				}else {
+					lastTrue = false;
 				}
+				
 			}
 		}
 		return trueAns;
