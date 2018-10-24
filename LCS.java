@@ -20,22 +20,26 @@ public class LCS {
 		}
 		while(i != -1) {
 			i = s.indexOf(' ',i +1);
-			if(i != -1) {
-				String temp = s.substring(start,i);
-				temp.trim();
-				data.add(temp);
-				if(containTrueIndex) {
-					startIndex.add(start);
-					endIndex.add(i);
-				}		
-			}else {
-				String temp = s.substring(start,s.length());
-				temp.trim();
-				data.add(temp);
-				if(containTrueIndex) {
-					startIndex.add(start);
-					endIndex.add(s.length());
-				}				
+			System.out.println("i la " + i);
+			boolean out = i == -1 ? (true) : (s.charAt(i-1) != ' ');
+			if( out) {
+				if(i != -1) {
+					String temp = s.substring(start,i);
+					temp.trim();
+					data.add(temp);
+					if(containTrueIndex) {
+						startIndex.add(start);
+						endIndex.add(i);
+					}		
+				}else {
+					String temp = s.substring(start,s.length());
+					temp.trim();
+					data.add(temp);
+					if(containTrueIndex) {
+						startIndex.add(start);
+						endIndex.add(s.length());
+					}				
+				}
 			}
 			start = i+1;
 			trueIndex.add(false);

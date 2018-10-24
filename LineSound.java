@@ -48,7 +48,7 @@ public class LineSound extends JPanel  implements Runnable{
 	    	   }
 			
 			try {
-	            // thread to sleep for 1000 milliseconds
+	            // thread to sleep for 100 milliseconds
 	            Thread.sleep(100);
 	         } catch (Exception e) {
 	            System.out.println(e);
