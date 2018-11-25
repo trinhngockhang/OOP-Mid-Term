@@ -7,6 +7,7 @@ public class LineSound extends JPanel  implements Runnable{
 	/**
 	 * Create the panel.
 	 */
+	private Boolean stop = false;
 	JLabel label = new JLabel("00:00");
 	JProgressBar progressBar = new JProgressBar();
 	JLabel label_1 = new JLabel();
@@ -27,34 +28,32 @@ public class LineSound extends JPanel  implements Runnable{
 		add(label_1);
 
 	}
-
 	@Override
 	public void run() {
-		   int minusFixed  = (int) (state.getAudio().getMedia().durationProperty().getValue().toSeconds() / 60);
-		   int secondsFixed = (int) (state.getAudio().getMedia().durationProperty().getValue().toSeconds()% 60);
-		   String secondFixedString = secondsFixed < 10 ? ("0" + secondsFixed) : ("" + secondsFixed);
-		   String displayTimeFixed = minusFixed + ":" + secondFixedString;
-		   label_1.setText(displayTimeFixed);
-		while(true) {
-			if(state.getPlayingBool()) {
-	    		   double currentTime = state.getAudio().getCurrentTime().toMillis();
-	    		   double fixedTime = state.getAudio().getMedia().durationProperty().getValue().toMillis();
-	    		   int minusCurrent  = (int) (state.getAudio().getCurrentTime().toSeconds() / 60);
-	    		   int secondsCurrent = (int) (state.getAudio().getCurrentTime().toSeconds() % 60);
- 	    		   progressBar.setValue((int) (currentTime/fixedTime * 100));
- 	    		   String secondCurrentString = secondsCurrent < 10 ? ("0" + secondsCurrent) : ("" + secondsCurrent);
- 	    		   String displayTimeCurrent = minusCurrent + ":" + secondCurrentString;
- 	    		   label.setText(displayTimeCurrent);
-	    	   }
+		
+			   int minusFixed  = (int) (state.getAudio().getMedia().durationProperty().getValue().toSeconds() / 60);
+			   int secondsFixed = (int) (state.getAudio().getMedia().durationProperty().getValue().toSeconds()% 60);
+			   String secondFixedString = secondsFixed < 10 ? ("0" + secondsFixed) : ("" + secondsFixed);
+			   String displayTimeFixed = minusFixed + ":" + secondFixedString;
+			   label_1.setText(displayTimeFixed);
+			   		while(true) {
+			   		try {
+			            // thread to sleep for 100 milliseconds
+			            Thread.sleep(1000);
+			         } catch (Exception e) {
+			            System.out.println(e);
+			         }
+		    		   double currentTime = state.getAudio().getCurrentTime().toMillis();
+		    		   double fixedTime = state.getAudio().getMedia().durationProperty().getValue().toMillis();
+		    		   int minusCurrent  = (int) (state.getAudio().getCurrentTime().toSeconds() / 60);
+		    		   int secondsCurrent = (int) (state.getAudio().getCurrentTime().toSeconds() % 60);
+	 	    		   progressBar.setValue((int) (currentTime/fixedTime * 100));
+	 	    		   String secondCurrentString = secondsCurrent < 10 ? ("0" + secondsCurrent) : ("" + secondsCurrent);
+	 	    		   String displayTimeCurrent = minusCurrent + ":" + secondCurrentString;
+	 	    		   label.setText(displayTimeCurrent);
+				   
+			   	}
 			
-			try {
-	            // thread to sleep for 100 milliseconds
-	            Thread.sleep(100);
-	         } catch (Exception e) {
-	            System.out.println(e);
-	         }
-		}
-		
-		
+			
 	}
 }

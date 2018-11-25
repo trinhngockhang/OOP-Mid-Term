@@ -58,10 +58,13 @@ public class LCS {
 			String s1 = arr1.get(i).toString();
 			int x = lastTrue? (z ):((i <= 3) ? 0: i - 3);
 			System.out.println ( "x la " + x);
-			for(int j = x ;j < long2;j++) {
+			int WordFromAns = i + 5;
+			//xet 5 tu bat dau tu tu nhap
+			WordFromAns = WordFromAns <= long2 ? WordFromAns:long2;
+			for(int j = x ;j < WordFromAns;j++) {
 				String s2 = arr2.get(j).toString();
 				System.out.println("so sanh: " +j + "   "+  s1 + " voi " + s2);
-				if(s1.equals(s2)) {
+				if(s1.equalsIgnoreCase(s2)) {
 					trueIndex.set(i,true);
 					lastTrue = true;
 					System.out.println ( "set " + j + " true " + trueIndex.get(j));
@@ -69,7 +72,6 @@ public class LCS {
 					z = j + 1;
 					j = long2 + 1;
 					
-				
 				}else {
 					lastTrue = false;
 				}
